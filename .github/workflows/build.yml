@@ -18,12 +18,11 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: Install Dependencies
+        - name: Install Dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y \
             python3-pip \
-            build-setup \
             git \
             zip \
             unzip \
