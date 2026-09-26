@@ -1,0 +1,56 @@
+name: Build Kivy APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+            python3-pip \
+            build-setup \
+            git \
+            zip \
+            unzip \
+            autoconf \
+            libtool \
+            pkg-config \
+            zlib1g-dev \
+            libncurses5-dev \
+            libncursesw5-dev \
+            libtinfo5 \
+            libffi-dev \
+            libssl-dev
+
+    - name: Install Buildozer and Cython
+      run: |
+        pip install --upgrade pip
+        pip install Cython==0.29.33
+        pip install buildozer
+        pip install pillow
+        pip install reportlab
+
+    - name: Build APK with Buildozer
+      run: |
+        buildozer -v android debug
+
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: package-apk
+        path: bin/*.apk
